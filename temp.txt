@@ -1,9 +1,0 @@
-﻿
-Name      IP             Status 
-----      --             ------ 
-LMCNB0746 172.28.130.116 OFFLINE
-LMCNB0732 10.105.16.43   ONLINE 
-LMCNB0773 10.105.16.23   ONLINE 
-LMCNB0775 10.105.16.224  ONLINE 
-
-

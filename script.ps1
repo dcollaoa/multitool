@@ -21,6 +21,7 @@ $ascii = @"
 #Archivos globales
 $defaultFileName = "computers.txt"
 $tempFileName = "temp.txt"
+$ftempFileName = "ftemp.txt"
 
 
 <# MENU / SUB-MENUS #>
@@ -32,11 +33,13 @@ function Show-Menu {
     Write-Host ""
     Write-Host "Menu principal"
     Write-Host ""
-    Write-Host "1: Scripts de analisis y reconocimiento."
-    Write-Host "2: Scripts de schtasks."
-    Write-Host "3: Scripts de backup."
-    Write-Host "4: Scripts de control de acceso."
+    Write-Host "1: Scripts de Analisis."
+    Write-Host "2: Scripts de Schtasks."
+    Write-Host "3: Scripts de Backup."
+    Write-Host "4: Scripts de Access Control."
     Write-Host "5: Scripts de MPCMDRUN."
+    Write-Host "6: Scripts de Reconocimiento."
+    Write-Host "7: Scripts de Robocopy."
     Write-Host "0: Salir."
     Write-Host ""
 }
@@ -45,14 +48,14 @@ function Show-AnalisisMenu {
     Clear-Host
     Write-Host $ascii -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "Scripts de analisis y reconocimiento"
+    Write-Host "Scripts de Analisis"
     Write-Host ""
-    Write-Host "1: Ping / Nslookup"
-    Write-Host "2: Mostrar equipos online"
-    Write-Host "3: Mostrar equipos offline"
-    Write-Host "4: Mostrar equipos con VPN"
-    Write-Host "5: Leer archivo generado (temp.txt)"
-    Write-Host "0: Volver al menu principal"
+    Write-Host "1: Escanear lista de equipos (Nslookup/Ping)."
+    Write-Host "2: Filtrar equipos online."
+    Write-Host "3: Filtrar equipos offline."
+    Write-Host "4: Filtrar equipos con VPN."
+    Write-Host "5: Leer archivo temporal generado (/temp/temp.txt)."
+    Write-Host "0: Volver al menu principal."
     Write-Host ""
 }
 
@@ -62,11 +65,11 @@ function Show-SchTasksMenu {
     Write-Host ""
     Write-Host "Scripts de Schtasks"
     Write-Host ""
-    Write-Host "1: Crear X tarea en Schtasks"
-    Write-Host "2: Leer X tarea en Schtasks"
-    Write-Host "3: Modificar X tarea en Schtasks"
-    Write-Host "4: Eliminar X tarea en Schtasks"
-    Write-Host "0: Volver al menu principal"
+    Write-Host "1: Crear X tarea en Schtasks."
+    Write-Host "2: Leer X tarea en Schtasks."
+    Write-Host "3: Modificar X tarea en Schtasks."
+    Write-Host "4: Eliminar X tarea en Schtasks."
+    Write-Host "0: Volver al menu principal."
     Write-Host ""
 }
 
@@ -74,17 +77,17 @@ function Show-BackupMenu {
     Clear-Host
     Write-Host $ascii -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "Scripts de backup"
+    Write-Host "Scripts de Backup"
     Write-Host ""
-    Write-Host "1: Copiar archivos para el respaldo"
-    Write-Host "2: Modificar archivos para el respaldo"
-    Write-Host "3: Enviar archivos al equipo de destino"
-    Write-Host "4: Crear carpeta en servidor"
-    Write-Host "5: Obtener herencia de la carpeta"
-    Write-Host "6: Deshabilitar herencia de la carpeta"
-    Write-Host "7: Obtener permisos de la carpeta"
-    Write-Host "8: Modificar permisos de la carpeta"
-    Write-Host "0: Volver al menu principal"
+    Write-Host "1: Copiar archivos para el respaldo."
+    Write-Host "2: Modificar archivos para el respaldo."
+    Write-Host "3: Enviar archivos al equipo de destino."
+    Write-Host "4: Crear carpeta en servidor."
+    Write-Host "5: Obtener herencia de la carpeta."
+    Write-Host "6: Deshabilitar herencia de la carpeta."
+    Write-Host "7: Obtener permisos de la carpeta."
+    Write-Host "8: Modificar permisos de la carpeta."
+    Write-Host "0: Volver al menu principal."
     Write-Host ""
 }
 
@@ -92,12 +95,12 @@ function Show-AccessControlMenu {
     Clear-Host
     Write-Host $ascii -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "Scripts de control de acceso"
+    Write-Host "Scripts de Access Control"
     Write-Host ""
-    Write-Host "1: Obtener permisos de acceso de la carpeta"
-    Write-Host "2: Ver permisos de X usuario en la carpeta"
-    Write-Host "3: Agregar permisos de X usuario en la carpeta"
-    Write-Host "0: Volver al menu principal"
+    Write-Host "1: Obtener permisos de acceso de la carpeta."
+    Write-Host "2: Ver permisos de X usuario en la carpeta."
+    Write-Host "3: Agregar permisos de X usuario en la carpeta."
+    Write-Host "0: Volver al menu principal."
     Write-Host ""
 }
 
@@ -107,9 +110,21 @@ function Show-MPCMDRUNMenu {
     Write-Host ""
     Write-Host "Scripts de MPCMDRUN"
     Write-Host ""
-    Write-Host "1: Analizar equipo con Windows Defender"
+    Write-Host "1: Analizar equipo con Windows Defender."
     Write-Host "2: Obtener log de resultados."
-    Write-Host "0: Volver al menu principal"
+    Write-Host "0: Volver al menu principal."
+    Write-Host ""
+}
+
+function Show-ReconMenu {
+    Clear-Host
+    Write-Host $ascii -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Scripts de Reconocimiento"
+    Write-Host ""
+    Write-Host "1: Obtener version de Firmware (PsExec/WMIC)."
+    Write-Host "2: Leer archivo temporal generado (/temp/ftemp.txt)."
+    Write-Host "0: Volver al menu principal."
     Write-Host ""
 }
 
@@ -119,7 +134,6 @@ function Test-Function {
 }
 
 <# FUNCIONES AUXILIARES#>
-
 # Mensajes <Success, Warning, Info, Error>
 function Show-Message {
     
@@ -195,6 +209,7 @@ function Select-TextFile {
     $result = $fileBrowser.ShowDialog()
 
     if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+        Show-Message -Message "Archivo seleccionado satisfactoriamente." -Category "Success" -Delay 1
         return Get-Content $fileBrowser.FileName
     }
 }
@@ -204,10 +219,10 @@ function Set-Input {
     Write-Host $ascii -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Seleccionar el metodo de entrada para el ingreso de valores."
-    Write-Host "1: Manual"
-    Write-Host "2: Abrir un archivo .txt"
-    Write-Host "3: Leer computers.txt (archivo por defecto)"
-    Write-Host "0: Ir hacia atras"
+    Write-Host "1: Manual."
+    Write-Host "2: Abrir un archivo .txt."
+    Write-Host "3: Leer computers.txt (archivo por defecto)."
+    Write-Host "0: Ir hacia atras."
     Write-Host ""
 
     do {
@@ -269,34 +284,39 @@ function New-TempFile {
     )
     
     #Escribimos el valor en un archivo temporal
-    $filePath = Join-Path -Path $PSScriptRoot -ChildPath $fileName
+    $filePath = Join-Path -Path $PSScriptRoot/temp -ChildPath $fileName
     $values | Out-File -FilePath $filePath -Encoding utf8
 
     #Devolvemos la ruta del archivo temporal
-    Show-Message -Message "Se ha creado un archivo en $PSScriptRoot." -Category "Info" -Delay 5
+    Show-Message -Message "Se ha creado un archivo en $filePath." -Category "Info" -Delay 5
 }
 
 #Leer archivo temporal con resultados
-function Show-TempContent {
-    $filePath = Join-Path -Path $PSScriptRoot -ChildPath $tempFileName
+function Show-TempFile {
+    param (
+        [string]$FileName
+    )
+
+    $filePath = Join-Path -Path $PSScriptRoot/temp -ChildPath $FileName
 
     if (Test-File -filePath $filePath) {
         $contentFile = Get-Content $filePath
         $contentFile | Sort-Object | Out-Host
-        Show-Message -Message "Ubicacion: $filePath" -Category "Info" -Delay 3
+        Show-Message -Message "Ubicacion: $filePath" -Category "Info" -Delay 5
     } 
 }
 
 <# FUNCIONES PRINCIPALES #>
-function Ping-Nslookup {
+<# FUNCION HOST STATUS#>
+function Show-HostStatus {
     Clear-Host
 
     #Le preguntamos al usuario como va a ingresar los valores (Manual / Read file / Default)
     $values = Set-Input
 
     if ($values) {
-        #Ejecutamos la funcion Ping-Values
-        $pingResults = Ping-Values -values $values
+        #Ejecutamos la funcion Test-HostStatus
+        $pingResults = Test-HostStatus -values $values
         #Resultados
         $resultsArray = @()
 
@@ -314,8 +334,7 @@ function Ping-Nslookup {
     }
 }
 
-<# FUNCIONES SECUNDARIAS #>
-function Ping-Values {
+function Test-HostStatus {
     param (
         [Parameter(Mandatory = $true)]
         [array]$values
@@ -331,27 +350,19 @@ function Ping-Values {
             # Hacemos nslookup al valor actual del array
             $nslookupResult = nslookup $value 2>$null
             # Hacemos Resolve-DnsName al valor actual del array
-            $resolveDnsResult = Resolve-DnsName -Name $value -ErrorAction SilentlyContinue
+            #$resolveDnsResult = Resolve-DnsName -Name $value -ErrorAction SilentlyContinue
 
             # Obtenemos la dirección IP del resultado de nslookup
             if ($nslookupResult) {
                 $ipAddress = ($nslookupResult | Select-String 'Address' | Select-Object -Skip 1 -First 1).ToString().Split(':')[1].Trim()
             }
             # Si nslookup no funciona, intentamos con Resolve-DnsName
-            elseif ($resolveDnsResult) {
-                $ipAddress = $resolveDnsResult.IPAddress
-            }
-            # Si ninguna de las dos funciona, dejamos la dirección IP vacía
-            else {
-                $ipAddress = ""
-            }
+            #elseif ($resolveDnsResult) {
+            #    $ipAddress = $resolveDnsResult.IPAddress
+            #}
 
-            # Verifica si la dirección IP comienza con 172
-            if ($pingResult -and $ipAddress.StartsWith("172")) {
-                $status = "VPN"
-            }
             # Si el ping y nslookup o Resolve-DnsName son exitosos y la IP no comienza con 172, se agrega una entrada al hashtable $results con la dirección IP del equipo
-            elseif ($pingResult -and $ipAddress) {
+            if ($pingResult -and $ipAddress) {
                 $status = "ONLINE"
             }
             # Si el ping es exitoso pero nslookup o Resolve-DnsName falla, se agrega una entrada al hashtable $results indicando que hay un problema de DNS, sin la dirección IP
@@ -360,7 +371,12 @@ function Ping-Values {
             }
             # Si el ping no es exitoso, se agrega una entrada al hashtable $results sin la dirección IP
             else {
-                $status = "OFFLINE"
+                if ($ipAddress.StartsWith("172")) {
+                    $status = "VPN"
+                }
+                else {
+                    $status = "OFFLINE"
+                }
             }
 
             $results.Add($value, [PSCustomObject]@{
@@ -380,12 +396,13 @@ function Ping-Values {
 }
 
 
-Function Show-Status {
+Function Get-HostStatus {
     param (
         [Parameter(Mandatory = $false)]
         [string]$status
     )
-    $filePath = Join-Path -Path $PSScriptRoot -ChildPath $tempFileName
+    Write-Host ""
+    $filePath = Join-Path -Path $PSScriptRoot/temp -ChildPath $tempFileName
     if (Test-File -filePath $filePath) {
         $content = Get-Content $filePath | Select-String -Pattern $status
 
@@ -395,8 +412,67 @@ Function Show-Status {
             $ipAddress = $data[1]
             Show-Message -Message "$name ($ipAddress)" -Category "Success" -Delay 1
         }
+        Start-Sleep -Seconds 5
     }
 
+}
+
+<# FUNCION FIRMWARE STATUS#>
+function Show-FirmwareStatus {
+    Clear-Host
+
+    #Le preguntamos al usuario como va a ingresar los valores (Manual / Read file / Default)
+    $values = Set-Input
+
+    if ($values) {
+        #Ejecutamos la funcion Test-FirmwareStatus
+        $firmwareResults = Test-FirmwareStatus -values $values
+        #Resultados 
+        $resultsArray = @()
+
+        foreach ($key in $firmwareResults.Keys) {
+            $value = $firmwareResults[$key]
+            $result = [PSCustomObject]@{
+                "Name" = $key
+                "FirmwareVersion" = $value.FirmwareVersion
+            }
+            $resultsArray += $result
+        }
+
+        New-TempFile -values $resultsArray -fileName $ftempFileName
+    }
+}
+
+function Test-FirmwareStatus {
+    param (
+        [Parameter(Mandatory = $true)]
+        [array]$values
+    )
+
+
+    # Crear una nueva tabla
+    $results = @{}
+
+    foreach ($value in $values) {
+            # Ejecutar PsExec para obtener la versión del firmware en el equipo remoto
+            $firmwareOutput = ./addons/PsExec.exe \\$value cmd.exe /c "wmic /node:'$value' bios get smbiosbiosversion"
+
+            # Filtrar la salida para obtener la línea que contiene "SMBIOSBIOSVersion"
+            $firmwareLine = ($firmwareOutput -join "`n" | Select-String -Pattern 'SMBIOSBIOSVersion\s+\S+').Matches.Value
+
+            # Extraer la versión del firmware de la línea encontrada
+            $firmwareResult = ($firmwareLine -split '\s+')[-1]
+
+            Write-Host "$firmwareResult"
+            Start-Sleep -Seconds 3
+
+            $results.Add($value, [PSCustomObject]@{
+                "Name"    = $value
+                "FirmwareVersion" = $firmwareResult
+            })
+    }
+
+    return $results
 }
 
 
@@ -413,11 +489,11 @@ while ($true) {
                 }
                 elseif ($inputAnalisis -match '^[0-5]$') {
                     switch ($inputAnalisis) {
-                        '1' { Ping-Nslookup }
-                        '2' { Show-Status -status "ONLINE" }
-                        '3' { Show-Status -status "OFFLINE" }
-                        '4' { Test-Function }
-                        '5' { Show-TempContent }
+                        '1' { Show-HostStatus }
+                        '2' { Get-HostStatus -status "ONLINE" }
+                        '3' { Get-HostStatus -status "OFFLINE" }
+                        '4' { Get-HostStatus -status "VPN" }
+                        '5' { Show-TempFile -FileName $tempFileName }
                     }
                 }
                 else {
@@ -504,6 +580,21 @@ while ($true) {
                 }
                 else {
                     Show-Message -Message "Opcion no valida. Por favor, intente de nuevo." -Category "Error" -Delay 1
+                }
+            }
+        }
+        '6' {
+            while ($true) {
+                Show-ReconMenu
+                $inputRecon = Read-Host "Seleccione una opcion"
+                if ($inputRecon -eq '0') {
+                    break
+                }
+                elseif ($inputRecon -match '^[0-2]$') {
+                    switch ($inputRecon) {
+                        '1' { Show-FirmwareStatus }
+                        '2' { Show-TempFile -FileName $ftempFileName }
+                    }
                 }
             }
         }
